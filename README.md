@@ -294,4 +294,4 @@ We welcome contributions from systems JavaScript and WebAssembly engineers to he
 ## License
 
 This project is licensed under the **[MIT License](file:///d:/wasm-std-modules/javascript/modules/LICENSE)**.  
-Copyright &copy; 2024–2026 **Mahavishnu K <https://github.com/Mahavishnu-K>**. All rights reserved.
+Copyright &copy; 2026 **Mahavishnu K <https://github.com/Mahavishnu-K>**. All rights reserved.
