@@ -1,7 +1,7 @@
-# Pure WASM Node.js Compatibility Layer (`wasm-std-modules`)
+# Pure WASM Node.js Compatibility Layer (`ore-node-std`)
 ### A Self-Contained, Pure-JavaScript Node.js Standard Library Runtime for Wasmtime (WASI Preview 1) and the [ORE Sandbox Kernel](https://github.com/Mahavishnu-K/ore-kernel)
 
-[![ORE Kernel](https://img.shields.io/badge/Core%20Subsystem-ORE%20Kernel-6366f1.svg?logo=rust)](https://github.com/Mahavishnu-K/ore-kernel)
+[![ORE Kernel](https://img.shields.io/badge/Core%20System-ORE%20Kernel-6366f1.svg?logo=rust)](https://github.com/Mahavishnu-K/ore-kernel)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](file:///d:/wasm-std-modules/javascript/modules/LICENSE)
 [![Engine: Wasmtime](https://img.shields.io/badge/WASM_Engine-Wasmtime%2045%2B-orange.svg)](https://wasmtime.dev/)
 [![Spec: WASI Preview 1](https://img.shields.io/badge/Spec-WASI%20P1-purple.svg)](https://wasi.dev/)
@@ -19,7 +19,7 @@ Traditional runtimes like Node.js or V8/Deno are heavy, consume 50–150 MB of m
 
 Prior attempts to bridge this gap (such as `wasmedge-quickjs`) introduced **proprietary host-level lock-in**, relying on non-standard C++ host functions (`_node:os`, `_node:crypto`, and proprietary socket extensions) that completely break on standard WebAssembly runtimes like **Wasmtime (WASI Preview 1)**.
 
-**`wasm-std-modules`** is an engineered, self-contained, pure-JavaScript Node.js compatibility layer rewritten from the ground up to execute securely and deterministically on **standard Wasmtime WASI Preview 1** inside the **[ORE Kernel](https://github.com/Mahavishnu-K/ore-kernel)**. It eliminates all proprietary host bindings, severs foreign V8/Deno primordials, enforces strict POSIX module resolution, provides dual-format CJS/ESM dynamic linking, restores full Node.js stream contracts, and offloads heavy crypto and networking to the host kernel via safe Virtual File System (VFS) portals.
+**`ore-node-std`** is an engineered, self-contained, pure-JavaScript Node.js compatibility layer rewritten from the ground up to execute securely and deterministically on **standard Wasmtime WASI Preview 1** inside the **[ORE Kernel](https://github.com/Mahavishnu-K/ore-kernel)**. It eliminates all proprietary host bindings, severs foreign V8/Deno primordials, enforces strict POSIX module resolution, provides dual-format CJS/ESM dynamic linking, restores full Node.js stream contracts, and offloads heavy crypto and networking to the host kernel via safe Virtual File System (VFS) portals.
 
 ---
 
