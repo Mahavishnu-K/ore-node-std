@@ -286,6 +286,12 @@ For comprehensive copyright notices and license texts, see the [NOTICE](file:///
 
 ---
 
+## Contributing
+
+We welcome contributions from systems JavaScript and WebAssembly engineers to help harden, benchmark, and expand this compatibility layer toward 100% production-grade parity. Please review our [Contributing Guidelines](file:///d:/wasm-std-modules/javascript/modules/CONTRIBUTING.md) for architectural invariants, testing practices, and prioritized initiatives.
+
+---
+
 ## License
 
 This project is licensed under the **[MIT License](file:///d:/wasm-std-modules/javascript/modules/LICENSE)**.  
