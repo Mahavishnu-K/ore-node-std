@@ -1,0 +1,116 @@
+ORE Kernel WASM Standard Library Compatibility Layer (wasm-std-modules)
+Part of the ORE Kernel Project: https://github.com/Mahavishnu-K/ore-kernel
+Copyright (c) 2024-2026 Mahavishnu K. All rights reserved.
+
+Licensed under the MIT License (the "License"); you may not use this file
+except in compliance with the License. You may obtain a copy of the License at
+
+    https://opensource.org/licenses/MIT
+
+================================================================================
+ATTRIBUTION AND THIRD-PARTY LICENSES
+================================================================================
+
+This project incorporates and builds upon code and polyfills originating from
+multiple open-source projects. All adapted components are redistributed under
+their respective permissive open-source licenses (predominantly MIT and BSD-style).
+
+1. WasmEdge-QuickJS (Modules Framework)
+   - Original Repository: https://github.com/second-state/wasmedge-quickjs
+   - Fork / Upstream Base: https://github.com/Mahavishnu-K/wasmedge-quickjs
+   - Copyright (c) Second State INC and contributors.
+   - License: MIT License
+   - Modifications by Mahavishnu K:
+     * Severed all proprietary WasmEdge host bindings (_node:os, _node:crypto,
+       custom WASI socket extensions).
+     * Re-engineered module loaders to execute inside vanilla Wasmtime (WASI Preview 1).
+     * Rebuilt the filesystem (fs.js) and process (process.js) modules to rely
+       strictly on QuickJS built-in C APIs ('std' and 'os').
+     * Implemented VFS portals (.ore_crypto and .ore_network) for hardware-accelerated
+       cryptography and zero-RAM disk-streaming network fetch.
+     * Rewrote module imports with explicit POSIX '.js' extensions to prevent
+       QuickJS literal fopen() resolution errors.
+     * Decoupled circular dependency deadlocks and eliminated top-level await in
+       foundational modules.
+
+2. Node.js Project
+   - Repository: https://github.com/nodejs/node
+   - Copyright Joyent, Inc. and other Node contributors. All rights reserved.
+   - License: MIT License
+   - Adapted modules: Core portions of stream, stream/promises, internal/streams/*,
+     fs, internal/fs/*, assert, internal/assert/*, errors, util, crypto/util,
+     string_decoder, and legacy constants.
+
+3. The Deno Authors (Deno Standard Library)
+   - Repository: https://github.com/denoland/deno / https://github.com/denoland/deno_std
+   - Copyright (c) 2018-2022 the Deno authors. All rights reserved.
+   - License: MIT License
+   - Adapted modules: Portions of stream contracts (Readable, Writable, Duplex, Transform),
+     util/inspect.js, util/types.js, internal/util/comparisons.js, fmt/printf.js,
+     and stream/promises.js.
+   - Modifications: Removed Deno engine primordials (SafeMap, String(Deno.pid), etc.)
+     in favor of standard ECMAScript primitives and QuickJS runtime globals.
+
+4. Narwhal.js
+   - Repository: http://narwhaljs.org
+   - Copyright (c) 2009 Thomas Robinson <280north.com>
+   - License: MIT License
+   - Adapted module: assert.js core assertion engine and test mechanics.
+
+5. Punycode.js
+   - Repository: https://github.com/mathiasbynens/punycode.js
+   - Copyright (c) Mathias Bynens <https://mathiasbynens.be/>
+   - License: MIT License
+   - Adapted module: punycode.js (RFC 3492 Punycode / UCS-2 converter).
+
+6. base64-js
+   - Repository: https://github.com/beatgammit/base64-js
+   - Copyright (c) 2014 T. Jameson Little
+   - License: MIT License
+   - Adapted module: Embedded within buffer.js for high-performance Base64 encoding.
+
+7. buffer
+   - Repository: https://github.com/feross/buffer
+   - Copyright (c) Feross Aboukhadijeh, and other contributors.
+   - License: MIT License
+   - Adapted module: buffer.js (Pure-JS Node.js Buffer implementation).
+
+8. setImmediate (YuzuJS)
+   - Repository: https://github.com/YuzuJS/setImmediate
+   - Copyright (c) 2012 Barnesandnoble.com llc, Donavon West, and YuzuJS contributors.
+   - License: MIT License
+   - Adapted module: Embedded within timers.js task scheduling.
+
+9. Chalk / ansi-regex / util inspectors
+   - Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>, Qix-, arjunmehta, and LitoMore.
+   - License: MIT License
+   - Adapted module: ANSI escape sequence stripping and terminal inspection in
+     internal/util/inspect.js.
+
+10. QuickJS Javascript Engine
+    - Website: https://bellard.org/quickjs/
+    - Copyright (c) 2017-2021 Fabrice Bellard and Charlie Gordon.
+    - License: MIT License
+    - Target runtime for all JavaScript standard library modules in this repository.
+
+================================================================================
+MIT LICENSE TEXT
+================================================================================
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
