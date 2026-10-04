@@ -1,5 +1,4 @@
 # Pure WASM Node.js Compatibility Layer (`ore-node-std`)
-### A Self-Contained, Pure-JavaScript Node.js Standard Library Runtime for Wasmtime (WASI Preview 1) and the [ORE Sandbox Kernel](https://github.com/Mahavishnu-K/ore-kernel)
 
 [![ORE Kernel](https://img.shields.io/badge/Core%20System-ORE%20Kernel-6366f1.svg?logo=rust)](https://github.com/Mahavishnu-K/ore-kernel)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](file:///d:/wasm-std-modules/javascript/modules/LICENSE)
