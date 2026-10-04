@@ -233,7 +233,7 @@ javascript/modules/
 
 ## Integration with the ORE Host Kernel
 
-This standard module library serves as the official JavaScript runtime subsystem for the **[ORE Kernel (ore-kernel)](https://github.com/Mahavishnu-K/ore-kernel)**.
+This standard module library serves as the official JavaScript runtime subsystem for the **[ORE Kernel (sandbox)](https://github.com/Mahavishnu-K/ore-kernel/blob/dev/ore-core/src/sandbox.rs)**.
 
 To embed and execute scripts with this runtime inside a Rust-based Wasmtime sandbox:
 
