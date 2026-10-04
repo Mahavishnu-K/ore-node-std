@@ -1,3 +1,5 @@
+// Libuv error codes and status mappings.
+
 export const UV_EOF = (-4095);
 export const UV_UNKNOWN = (-4094);
 export const UV_EAI_ADDRFAMILY = (-3000);

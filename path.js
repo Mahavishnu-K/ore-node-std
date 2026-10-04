@@ -1,4 +1,4 @@
-// Self-contained POSIX path polyfill for ORE OS (QuickJS)
+// Node.js 'path' compatibility module (POSIX implementation).
 
 function assertPath(path) {
   if (typeof path !== 'string') {

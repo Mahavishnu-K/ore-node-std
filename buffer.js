@@ -1,3 +1,5 @@
+// Node.js 'buffer' compatibility module (Buffer and SlowBuffer implementation).
+
 var exports$3 = {},
   _dewExec$2 = false;
 function dew$2() {

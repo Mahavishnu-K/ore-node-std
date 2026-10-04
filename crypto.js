@@ -1,5 +1,5 @@
-// ORE Kernel Production-Grade Crypto Module for Inception QuickJS
-// Provides real hashing, HMAC, AES-256-CBC, CSPRNG, and key derivation.
+// Node.js 'crypto' compatibility module for WASI / QuickJS.
+// Offloads compute-heavy operations to the host kernel via the .ore_crypto VFS portal.
 
 import * as os from 'os';
 import { Buffer } from 'buffer';
@@ -8,24 +8,23 @@ import fs from 'fs';
 const REQ_FILE = '/ore_tmp/.ore_crypto/req.bin';
 const RES_FILE = '/ore_tmp/.ore_crypto/res.bin';
 
-// Helper to communicate with the native Rust KernelCrypto
+// Dispatches command and payload to host kernel via VFS register.
 function invokeKernelCrypto(cmdId, payloadBuffer) {
   try {
     const cmdBuf = Buffer.from([cmdId]);
     const req = payloadBuffer ? Buffer.concat([cmdBuf, payloadBuffer]) : cmdBuf;
 
-    // TRUNCATE instead of DELETE (Safe on Windows)
+    // Clear response register to prevent stale reads.
     try { fs.writeFileSync(RES_FILE, Buffer.alloc(0)); } catch (_) {}
 
     fs.writeFileSync(REQ_FILE, req);
 
-    // Wait synchronously for Rust to process (usually takes < 1ms)
-    // 100,000 iterations ensures heavy PBKDF2 calculations never timeout
+    // Poll for host response with 1000ms timeout.
     let tries = 0;
     let resLen = 0;
-    while (tries < 1000) { // 1000ms (1 second) timeout is plenty!
+    while (tries < 1000) {
       try {
-        // CHECK SIZE instead of EXISTENCE (Prevents Phantom Reads)
+        // Guard against phantom reads before host finishes writing.
         const stat = fs.statSync(RES_FILE);
         if (stat.size > 0) {
           resLen = stat.size;
@@ -33,7 +32,7 @@ function invokeKernelCrypto(cmdId, payloadBuffer) {
         }
       } catch (_) {}
 
-      // YIELD TO WASI: Releases Windows file lock & burns ZERO CPU fuel!
+      // Yield execution via WASI poll_oneoff to await host response without consuming CPU fuel.
       if (os && os.sleep) {
         os.sleep(1);
       }
@@ -51,7 +50,7 @@ function invokeKernelCrypto(cmdId, payloadBuffer) {
       throw new Error("ORE Crypto Portal Error: Kernel response is empty.");
     }
 
-    // TRUNCATE for cleanup
+    // Reset response register.
     try { fs.writeFileSync(RES_FILE, Buffer.alloc(0)); } catch (_) {}
 
     const status = res[0];
@@ -66,7 +65,7 @@ function invokeKernelCrypto(cmdId, payloadBuffer) {
 }
 
 
-// CONSTANTS & METADATA (Prevents NPM Feature-Detection Crashes)
+// OpenSSL cipher and padding constants.
 export const constants = {
   OPENSSL_CONF: 'OPENSSL_CONF',
   RSA_PKCS1_PADDING: 1,
@@ -148,7 +147,7 @@ export function randomUUID() {
 }
 
 
-// TIMING SAFE EQUALITY (Uses Kernel Command 8)
+// Constant-time buffer comparison via host kernel.
 
 export function timingSafeEqual(a, b) {
   if (!Buffer.isBuffer(a) && !(a instanceof Uint8Array)) throw new TypeError('First argument must be Buffer.');
@@ -167,7 +166,7 @@ export function timingSafeEqual(a, b) {
   return kernelRes[0] === 1;
 }
 
-// STREAMING HASH ENGINE (Uses Kernel Commands 2, 3, 4)
+// Incremental hash engine.
 
 export class Hash {
   constructor(algorithm) {
@@ -196,7 +195,7 @@ export class Hash {
 export function createHash(algo) { return new Hash(algo); }
 
 
-// STREAMING HMAC ENGINE (Uses Kernel Commands 5 & 10)
+// Incremental HMAC engine.
 
 export class Hmac {
   constructor(algorithm, key) {
@@ -229,7 +228,7 @@ export class Hmac {
 export function createHmac(algo, key) { return new Hmac(algo, key); }
 
 
-// KEY DERIVATION (PBKDF2 via Kernel Command 9)
+// PBKDF2 key derivation.
 
 export function pbkdf2Sync(password, salt, iterations, keylen, digest = 'sha256') {
   const pass = Buffer.isBuffer(password) ? password : Buffer.from(password);
@@ -257,7 +256,7 @@ export function pbkdf2(password, salt, iterations, keylen, digest, callback) {
 }
 
 
-// REAL HARDWARE AES-GCM (With getAuthTag / setAuthTag Support)
+// AES cipher implementation supporting GCM and CBC modes.
 
 export class Cipheriv {
   constructor(algorithm, key, iv) {
@@ -412,7 +411,7 @@ export function createCipheriv(algo, key, iv) { return new Cipheriv(algo, key, i
 export function createDecipheriv(algo, key, iv) { return new Decipheriv(algo, key, iv); }
 
 
-// THE COMPLETE 20 EXPORTS AGGREGATE
+// Module exports.
 
 export default {
   constants,

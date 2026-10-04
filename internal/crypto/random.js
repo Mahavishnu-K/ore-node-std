@@ -1,4 +1,4 @@
-// internal/crypto/random.js
+// Re-exports CSPRNG random generators for internal crypto subpaths.
 'use strict';
 
 import crypto from '../../crypto.js';

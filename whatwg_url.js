@@ -1,3 +1,5 @@
+// WHATWG URL and URLSearchParams specification implementation.
+
 import require$$0$1 from 'punycode';
 import require$$0 from 'util';
 

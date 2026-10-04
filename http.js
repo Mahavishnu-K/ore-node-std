@@ -1,5 +1,5 @@
-// js_modules/http.js
-// ORE Kernel Dual-Protocol (HTTP & HTTPS) Polyfill
+// Node.js 'http' and 'https' compatibility module for WASI / QuickJS.
+// Routes outbound HTTP/HTTPS requests through the .ore_network VFS portal.
 
 import * as std from 'std';
 import * as os from 'os';
@@ -15,7 +15,7 @@ export const STATUS_CODES = {
 
 export const METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'];
 
-// --- UNIVERSAL AGENT (Accepts both http and https without protocol rejection) ---
+// Universal Agent supporting both HTTP and HTTPS protocols.
 export class Agent {
     constructor(options = {}) {
         this.options = options;
@@ -31,13 +31,12 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Generate monotonically unique request ID
+// Monotonic request ID generator.
 function generateRequestId() {
     return `${Date.now()}_${Math.floor(Math.random() * 1000000)}`;
 }
 
-// NEW
-// Polls the specific response file corresponding to the request ID
+// Polls target response file until completion or timeout.
 async function waitForResponse(resFilePath) {
     let attempts = 0;
     while (attempts < 3000) { // 30-second timeout
@@ -79,7 +78,7 @@ export async function fetch(url, options = {}) {
     const method = (options.method || 'GET').toUpperCase();
     const reqId = generateRequestId();
 
-    // Isolated VFS channel per flight
+    // Dedicated VFS channel per request flight
     const targetFilename = `.ore_network/dl_${reqId}.bin`;
     const reqFilePath = `/ore_tmp/.ore_network/req_${reqId}.json`;
     const resFilePath = `/ore_tmp/.ore_network/res_${reqId}.bin`;
@@ -129,7 +128,7 @@ export async function fetch(url, options = {}) {
 }
 globalThis.fetch = fetch;
 
-// --- INCOMING MESSAGE (Readable Stream for Axios/Node Stream Readers) ---
+// IncomingMessage: Readable stream implementation for response payloads.
 export class IncomingMessage extends Readable {
     constructor(bodyPath) {
         super();
@@ -170,7 +169,7 @@ export class IncomingMessage extends Readable {
     }
 }
 
-// --- CLIENT REQUEST (Writable Stream for Axios, Piping, and Form-Data) ---
+// ClientRequest: Writable stream implementation for request payloads.
 export class ClientRequest extends Writable {
     constructor(url, options, cb) {
         super({
@@ -196,7 +195,7 @@ export class ClientRequest extends Writable {
         }
     }
 
-    // Node.js Header Manipulation APIs
+    // Header management methods.
     setHeader(name, value) {
         this.headers[name.toLowerCase()] = value;
     }
@@ -217,7 +216,7 @@ export class ClientRequest extends Writable {
         delete this.headers[name.toLowerCase()];
     }
 
-    // Connection Stubs
+    // Connection configuration stubs.
     setTimeout(ms, cb) {
         if (cb) setTimeout(cb, ms);
         return this;
@@ -225,14 +224,14 @@ export class ClientRequest extends Writable {
     setNoDelay() { return this; }
     setSocketKeepAlive() { return this; }
 
-    // Writable Stream Implementation: receives chunks from .write() or .pipe()
+    // Receives chunks from .write() or .pipe().
     _write(chunk, encoding, callback) {
         const buf = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, encoding);
         this.bodyChunks.push(buf);
         callback();
     }
 
-    // Finalizer: executed when all data is written and .end() is called
+    // Dispatches request when all data is written and .end() is called.
     _final(callback) {
         const bodyData = this.bodyChunks.length > 0 
             ? Buffer.concat(this.bodyChunks).toString('utf8') 

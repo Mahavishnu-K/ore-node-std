@@ -1,4 +1,3 @@
-// internal/fs/cp/cp-sync.js
 // Copyright Joyent, Inc. and Node.js contributors. All rights reserved.
 // MIT license.
 //

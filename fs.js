@@ -1,15 +1,12 @@
-// js_modules/fs.js
-// ORE Kernel Production-Grade fs Polyfill
-// Powered natively by C QuickJS 'std' & 'os' (Synchronous, Zero Top-Level Await)
+// Node.js 'fs' compatibility module for WASI / QuickJS.
+// Uses synchronous QuickJS C primitives ('std' and 'os') for POSIX file operations.
 
 import * as std from 'std';
 import * as os from 'os';
 import { Buffer } from 'buffer';
 import { Readable, Writable } from 'stream';
 
-// -------------------------------------------------------------
-// CONSTANTS & STATS
-// -------------------------------------------------------------
+// File access constants and stats indicators.
 export const F_OK = 0;
 export const X_OK = 1;
 export const W_OK = 2;
@@ -90,10 +87,7 @@ export class Dirent {
     isSocket() { return false; }
 }
 
-// -------------------------------------------------------------
-// SYNCHRONOUS FILE OPERATIONS
-// -------------------------------------------------------------
-
+// Synchronous file operations.
 export function existsSync(path) {
     try {
         if (os && os.stat) {
@@ -378,9 +372,7 @@ export async function opendir(path) {
     };
 }
 
-// -------------------------------------------------------------
-// LOW-LEVEL DESCRIPTOR EMULATION (File Table)
-// -------------------------------------------------------------
+// File descriptor table emulation.
 const fileTable = new Map();
 let nextFd = 100;
 
@@ -463,10 +455,7 @@ export function ftruncateSync(fd, len = 0) {
     truncateSync(entry.path, len);
 }
 
-// -------------------------------------------------------------
-// NODE.JS FILE STREAMS (createReadStream / createWriteStream)
-// -------------------------------------------------------------
-
+// Streaming file I/O implementations.
 export class ReadStream extends Readable {
     constructor(path, options = {}) {
         super(options);
@@ -567,7 +556,7 @@ export function createWriteStream(path, options) {
     return new WriteStream(path, options);
 }
 
-// 1. Synchronous implementations
+// Symbolic link operations.
 export function readlinkSync(path) {
     if (os && os.readlink) {
         const res = os.readlink(path);
@@ -591,7 +580,7 @@ export function symlinkSync(target, path, _type) {
     copyFileSync(target, path);
 }
 
-// Stubs for permissions/owners
+// POSIX permissions and metadata stubs.
 export function chmodSync() {}
 export function chownSync() {}
 export function fchmodSync() {}
@@ -599,9 +588,7 @@ export function fchownSync() {}
 export function utimesSync() {}
 export function futimesSync() {}
 
-// -------------------------------------------------------------
-// ASYNCHRONOUS CALLBACK IMPLEMENTATIONS
-// -------------------------------------------------------------
+// Asynchronous callback shims.
 function makeAsync(syncFn) {
     return (...args) => {
         const cb = typeof args[args.length - 1] === 'function' ? args.pop() : null;
@@ -645,9 +632,7 @@ export const symlink = makeAsync(symlinkSync);
 export const utimes = makeAsync(utimesSync);
 export const futimes = makeAsync(futimesSync);
 
-// -------------------------------------------------------------
-// PROMISES API (`fs.promises` and `fs/promises`)
-// -------------------------------------------------------------
+// Promise-based filesystem API (fs/promises).
 export const promises = {
     constants,
     readFile: async (...args) => readFileSync(...args),
@@ -686,9 +671,7 @@ export const promises = {
     }
 };
 
-// -------------------------------------------------------------
-// DEFAULT EXPORT (Aggregates All APIs)
-// -------------------------------------------------------------
+// Module exports.
 export default {
     F_OK,
     R_OK,

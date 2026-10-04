@@ -1,4 +1,4 @@
-// internal/crypto/cipher.js
+// Re-exports cipher implementations for internal crypto subpaths.
 'use strict';
 
 import crypto from '../../crypto.js';

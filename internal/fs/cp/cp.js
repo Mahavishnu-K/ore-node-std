@@ -1,4 +1,3 @@
-// modules/internal/fs/cp/cp.js
 // Copyright Joyent, Inc. and Node.js contributors. All rights reserved. MIT license.
 
 'use strict';

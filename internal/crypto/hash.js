@@ -1,4 +1,4 @@
-// internal/crypto/hash.js
+// Re-exports hash and HMAC implementations for internal crypto subpaths.
 'use strict';
 
 import crypto from '../../crypto.js';

@@ -1,3 +1,5 @@
+// Node.js legacy 'url' compatibility module.
+
 import * as p$1 from 'punycode';
 import * as o$1 from 'querystring';
 import process from 'process';

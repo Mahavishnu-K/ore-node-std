@@ -1,5 +1,4 @@
-// js_modules/encoding.js
-// Production-grade pure-JS WHATWG TextEncoder & TextDecoder for QuickJS / Wasmtime
+// WHATWG TextEncoder and TextDecoder implementation for QuickJS / WASI.
 
 import { Buffer } from 'buffer';
 

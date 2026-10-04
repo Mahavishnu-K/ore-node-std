@@ -1,3 +1,5 @@
+// Node.js 'util' compatibility module for WASI / QuickJS.
+
 import { promisify, deprecate } from "./internal/util.js";
 import { debuglog } from "./internal/util/debuglog.js";
 import types from "./util/types.js";

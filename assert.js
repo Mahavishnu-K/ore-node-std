@@ -37,7 +37,6 @@ import { openSync, closeSync, readSync } from 'fs';
 import { inspect } from './internal/util/inspect.js';
 import { isPromise, isRegExp } from './internal/util/types.js';
 import { EOL } from './internal/constants.js';
-// import { BuiltinModule } from 'internal/bootstrap/loaders';
 import { isError } from './internal/util.js';
 
 const errorCache = new Map();

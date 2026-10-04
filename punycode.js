@@ -1,3 +1,4 @@
+// RFC 3492 Punycode and UCS-2 conversion utility.
 'use strict';
 
 /** Highest positive signed 32-bit float value */

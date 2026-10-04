@@ -1,4 +1,7 @@
 
+// Fallback recursive proxy for unsupported or optional Node built-in modules.
+// Returns undefined for 'then' to prevent Promise resolution deadlocks in require shims.
+
 const noop = () => false;
 export const isatty = noop;
 export const isIP = noop;

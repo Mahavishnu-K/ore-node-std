@@ -1,6 +1,7 @@
 
-import process from 'process';
+// Node.js 'os' compatibility module for WASI / QuickJS.
 
+import process from 'process';
 
 export const EOL = '\n';
 export const devNull = '/dev/null';
@@ -75,12 +76,12 @@ export const cpus = () => [
     }
 ];
 
-// Essential for Node 18+ concurrency packages (e.g. p-limit, tinypool, vite)
+// Concurrency parallelism limit for worker pools.
 export const availableParallelism = () => 1;
 
 export const endianness = () => 'LE';
-export const totalmem = () => 4 * 1024 * 1024 * 1024; // 4 GB (32-bit WASM limit)
-export const freemem = () => 2 * 1024 * 1024 * 1024;  // 2 GB virtual free RAM
+export const totalmem = () => 4 * 1024 * 1024 * 1024;
+export const freemem = () => 2 * 1024 * 1024 * 1024;
 
 export const homedir = () => {
     if (typeof process !== 'undefined' && process.env && process.env.HOME) {

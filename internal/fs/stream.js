@@ -1,4 +1,3 @@
-// modules/internal/fs/stream.js
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 // Copyright Joyent, Inc. and Node.js contributors. All rights reserved. MIT license.
 

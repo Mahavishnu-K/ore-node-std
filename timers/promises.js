@@ -1,4 +1,4 @@
-// timers/promises.js
+// Node.js 'timers/promises' compatibility subpath.
 'use strict';
 
 import timers from '../timers.js';

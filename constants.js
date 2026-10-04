@@ -1,5 +1,4 @@
-// modules/constants.js
-// Node.js legacy 'constants' compatibility module
+// Node.js legacy 'constants' compatibility module.
 
 import { os, fs, crypto, zlib } from './internal/constants.js';
 

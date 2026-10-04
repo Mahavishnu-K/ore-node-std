@@ -1,6 +1,5 @@
-// internal/errors.js
-// Pure-JS, QuickJS/WASI-safe. No import of ./util/inspect (breaks the
-// inspect <-> errors cycle). Call __setInspect(inspect) once from inspect.js.
+// Node.js internal error classes and formatting helpers.
+// Decoupled from inspect.js to eliminate circular dependency TDZ deadlocks.
 
 let _inspect = null;
 export function __setInspect(fn) { _inspect = fn; }

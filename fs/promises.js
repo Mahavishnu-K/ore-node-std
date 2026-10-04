@@ -1,3 +1,5 @@
+// Node.js 'fs/promises' compatibility subpath.
+
 import { promises } from '../fs.js';
 
 export const {

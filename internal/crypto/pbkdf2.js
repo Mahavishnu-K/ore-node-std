@@ -1,4 +1,4 @@
-// internal/crypto/pbkdf2.js
+// Re-exports PBKDF2 key derivation functions for internal crypto subpaths.
 'use strict';
 
 import crypto from '../../crypto.js';

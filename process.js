@@ -1,11 +1,8 @@
-// js_modules/process.js
-// Production-Grade pure-JS polyfill for Node.js 'process' on QuickJS / Wasmtime
+// Node.js 'process' compatibility module for WASI / QuickJS.
 
 import EventEmitter from 'events';
 
-// -------------------------------------------------------------
-// 1. BASIC ENVIRONMENT IDENTIFIERS
-// -------------------------------------------------------------
+// Environment and runtime identifiers.
 const title = 'wasmedge_quickjs';
 const arch = 'wasm';
 const platform = 'linux';
@@ -25,9 +22,7 @@ const release = {
   libUrl: '',
 };
 
-// -------------------------------------------------------------
-// 2. PROCESS I/O & ARGS
-// -------------------------------------------------------------
+// Process I/O streams and execution arguments.
 const env = {
   FORCE_COLOR: '1',
   ...(globalThis.env || {})
@@ -63,9 +58,7 @@ const stdout = createStdStream(1);
 const stderr = createStdStream(2);
 const stdin = createStdStream(0);
 
-// -------------------------------------------------------------
-// 3. TIMERS, PERFORMANCE & MICROTASKS
-// -------------------------------------------------------------
+// Microtask scheduling and high-resolution performance timers.
 const nextTick = (fn, ...args) => {
   if (typeof queueMicrotask === 'function') {
     queueMicrotask(() => fn(...args));
@@ -109,9 +102,7 @@ hrtime.bigint = function (time) {
   return BigInt(diff[0] * nanoPerSec) + BigInt(diff[1]);
 };
 
-// -------------------------------------------------------------
-// 4. METRICS & FILESYSTEM
-// -------------------------------------------------------------
+// Resource metrics and filesystem context.
 const cwd = () => '/ore_tmp';
 const chdir = () => {};
 const umask = () => 0;
@@ -154,9 +145,7 @@ const features = {
   cached_builtins: true,
 };
 
-// -------------------------------------------------------------
-// 5. PROCESS CLASS (Inheriting from EventEmitter)
-// -------------------------------------------------------------
+// Process EventEmitter implementation.
 class Process extends EventEmitter {
   constructor() {
     super();
@@ -259,9 +248,7 @@ class Process extends EventEmitter {
   setSourceMapsEnabled() {}
 }
 
-// -------------------------------------------------------------
-// 6. SINGLETON INSTANCE
-// -------------------------------------------------------------
+// Process singleton instance.
 const process = new Process();
 
 process.off = process.removeListener;
@@ -273,10 +260,7 @@ if (typeof globalThis.process === 'undefined') {
   globalThis.process = process;
 }
 
-// -------------------------------------------------------------
-// 7. PRE-BOUND NAMED EXPORTS
-// -------------------------------------------------------------
-// Methods must be bound to `process` so detached calls don't lose `this`
+// Pre-bound named exports for detached invocation.
 const emitWarning = process.emitWarning.bind(process);
 const exit = process.exit.bind(process);
 const reallyExit = process.reallyExit.bind(process);

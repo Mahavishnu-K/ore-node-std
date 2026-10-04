@@ -1,5 +1,4 @@
-// events.js
-// ORE Kernel Pure ES Module Node.js 'events' Polyfill
+// Node.js 'events' compatibility module (EventEmitter).
 'use strict';
 
 var domain;

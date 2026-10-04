@@ -1,5 +1,4 @@
-// stream/consumers.js
-
+// Node.js 'stream/consumers' compatibility subpath.
 'use strict';
 
 import { Buffer } from "../buffer.js";

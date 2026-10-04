@@ -1,4 +1,4 @@
-// internal/validators.js
+// Node.js argument and type validation helpers.
 'use strict';
 
 import {
@@ -10,7 +10,7 @@ import {
     ERR_INVALID_ARG_VALUE
 } from './errors.js';
 
-// fs access / copy constants (original referenced these without defining them)
+// File access and copy mode bitmasks.
 export const F_OK = 0;
 export const X_OK = 1;
 export const W_OK = 2;
