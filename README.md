@@ -289,4 +289,4 @@ For comprehensive copyright notices and license texts, see the [NOTICE](file:///
 ## License
 
 This project is licensed under the **[MIT License](file:///d:/wasm-std-modules/javascript/modules/LICENSE)**.  
-Copyright &copy; 2024–2026 **Mahavishnu K**. All rights reserved.
+Copyright &copy; 2024–2026 **Mahavishnu K <https://github.com/Mahavishnu-K>**. All rights reserved.

@@ -1,6 +1,6 @@
-ORE Kernel WASM Standard Library Compatibility Layer (wasm-std-modules)
+ORE Kernel WASM Standard Library Compatibility Layer (ore-node-std)
 Part of the ORE Kernel Project: https://github.com/Mahavishnu-K/ore-kernel
-Copyright (c) 2024-2026 Mahavishnu K. All rights reserved.
+Copyright (c) 2024-2026 Mahavishnu K <https://github.com/Mahavishnu-K>. All rights reserved.
 
 Licensed under the MIT License (the "License"); you may not use this file
 except in compliance with the License. You may obtain a copy of the License at
@@ -20,7 +20,7 @@ their respective permissive open-source licenses (predominantly MIT and BSD-styl
    - Fork / Upstream Base: https://github.com/Mahavishnu-K/wasmedge-quickjs
    - Copyright (c) Second State INC and contributors.
    - License: MIT License
-   - Modifications by Mahavishnu K:
+   - Modifications by Mahavishnu K <https://github.com/Mahavishnu-K>:
      * Severed all proprietary WasmEdge host bindings (_node:os, _node:crypto,
        custom WASI socket extensions).
      * Re-engineered module loaders to execute inside vanilla Wasmtime (WASI Preview 1).
