@@ -3,13 +3,18 @@
 import { promisify, deprecate } from "./internal/util.js";
 import { debuglog } from "./internal/util/debuglog.js";
 import types from "./util/types.js";
-import { Buffer } from "buffer";
+import { Buffer } from "./buffer.js";
 import { ERR_INVALID_ARG_TYPE } from "./internal/errors.js";
-import * as encoding from 'encoding';
+import * as encoding from "./encoding.js";
+import {
+    format,
+    formatWithOptions,
+    inspect,
+    stripVTControlCharacters,
+} from "./internal/util/inspect.js";
 
-export const debuglog = debuglog
-export const promisify = promisify;
-export const deprecate = deprecate;
+export { debuglog, promisify, deprecate };
+export { format, formatWithOptions, inspect, stripVTControlCharacters };
 
 class NodeFalsyValueRejectionError extends Error {
     reason;
@@ -26,6 +31,16 @@ class NodeInvalidArgTypeError extends TypeError {
         super(`The ${argumentName} argument must be of type function.`);
     }
 }
+
+const nextTick = (fn, ...args) => {
+    if (typeof globalThis.nextTick === "function") {
+        globalThis.nextTick(fn, ...args);
+    } else if (typeof queueMicrotask === "function") {
+        queueMicrotask(() => fn(...args));
+    } else {
+        Promise.resolve().then(() => fn(...args));
+    }
+};
 
 function callbackify(original) {
     if (typeof original !== "function") {
@@ -229,4 +244,8 @@ export default {
     TextEncoder,
     log,
     debuglog,
+    format,
+    formatWithOptions,
+    inspect,
+    stripVTControlCharacters,
 };
