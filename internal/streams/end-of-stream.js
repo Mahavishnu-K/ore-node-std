@@ -10,6 +10,14 @@ import {
     validateObject,
 } from "../validators.js";
 
+const nextTick = globalThis.nextTick || ((fn, ...args) => {
+    if (typeof queueMicrotask === 'function') {
+        queueMicrotask(() => fn(...args));
+    } else {
+        Promise.resolve().then(() => fn(...args));
+    }
+});
+
 function isRequest(stream) {
     return stream.setHeader && typeof stream.abort === "function";
 }

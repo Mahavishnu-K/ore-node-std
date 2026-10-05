@@ -2,8 +2,16 @@
 // Copyright Joyent and Node contributors. All rights reserved. MIT license.
 // deno-lint-ignore-file
 
-import { Buffer } from "buffer";
+import { Buffer } from "../../buffer.js";
 import { ERR_INVALID_ARG_TYPE, ERR_STREAM_NULL_VALUES } from "../errors.js";
+
+const nextTick = globalThis.nextTick || ((fn, ...args) => {
+    if (typeof queueMicrotask === 'function') {
+        queueMicrotask(() => fn(...args));
+    } else {
+        Promise.resolve().then(() => fn(...args));
+    }
+});
 
 function _from(Readable, iterable, opts) {
     let iterator;

@@ -3,11 +3,11 @@
 // deno-lint-ignore-file
 
 import { addAbortSignalNoValidate } from "./add-abort-signal.js";
-import { Buffer } from "buffer";
+import { Buffer } from "../../buffer.js";
 import { debuglog } from "../util/debuglog.js";
 import { getDefaultHighWaterMark, getHighWaterMark } from "./state.js";
 import { prependListener, Stream } from "./legacy.js";
-import { StringDecoder } from "string_decoder";
+import { StringDecoder } from "../../string_decoder.js";
 import { validateObject } from "../validators.js";
 import {
     ERR_INVALID_ARG_TYPE,
@@ -18,7 +18,7 @@ import {
 import _from from "./from.js";
 import BufferList from "./buffer_list.js";
 import destroyImpl from "./destroy.js";
-import EE from "events";
+import EE from "../../events.js";
 
 let debug = debuglog("stream", (fn) => {
     debug = fn;

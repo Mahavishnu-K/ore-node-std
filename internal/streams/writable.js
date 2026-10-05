@@ -3,7 +3,7 @@
 // deno-lint-ignore-file
 
 import { addAbortSignalNoValidate } from "./add-abort-signal.js";
-import { Buffer } from "buffer";
+import { Buffer } from "../../buffer.js";
 import { getDefaultHighWaterMark, getHighWaterMark } from "./state.js";
 import { isUint8Array } from "../util/types.js";
 import { Stream } from "./legacy.js";
@@ -19,7 +19,7 @@ import {
     ERR_UNKNOWN_ENCODING,
 } from "../errors.js";
 import destroyImpl from "./destroy.js";
-import EE from "events";
+import EE from "../../events.js";
 import Readable from "./readable.js";
 
 function _uint8ArrayToBuffer(chunk) {

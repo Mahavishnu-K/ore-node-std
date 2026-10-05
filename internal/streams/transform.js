@@ -5,6 +5,14 @@
 import { ERR_METHOD_NOT_IMPLEMENTED } from "../errors.js";
 import Duplex from "./duplex.js";
 
+const nextTick = globalThis.nextTick || ((fn, ...args) => {
+    if (typeof queueMicrotask === 'function') {
+        queueMicrotask(() => fn(...args));
+    } else {
+        Promise.resolve().then(() => fn(...args));
+    }
+});
+
 const kCallback = Symbol("kCallback");
 
 function Transform(options) {

@@ -19,6 +19,14 @@ import eos from "./end-of-stream.js";
 import Readable from "./readable.js";
 import PassThrough from "./passthrough.js";
 
+const nextTick = globalThis.nextTick || ((fn, ...args) => {
+    if (typeof queueMicrotask === 'function') {
+        queueMicrotask(() => fn(...args));
+    } else {
+        Promise.resolve().then(() => fn(...args));
+    }
+});
+
 function destroyer(stream, reading, writing, callback) {
     callback = once(callback);
 

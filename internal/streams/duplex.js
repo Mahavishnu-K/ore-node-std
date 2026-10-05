@@ -24,6 +24,14 @@ import eos from "./end-of-stream.js";
 import Readable from "./readable.js";
 import Writable from "./writable.js";
 
+const nextTick = globalThis.nextTick || ((fn, ...args) => {
+    if (typeof queueMicrotask === 'function') {
+        queueMicrotask(() => fn(...args));
+    } else {
+        Promise.resolve().then(() => fn(...args));
+    }
+});
+
 function Duplex(options) {
     if (!(this instanceof Duplex)) {
         return new Duplex(options);

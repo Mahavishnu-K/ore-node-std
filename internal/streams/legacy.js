@@ -2,7 +2,7 @@
 // Copyright Joyent and Node contributors. All rights reserved. MIT license.
 // deno-lint-ignore-file
 
-import EE from "events";
+import EE from "../../events.js";
 
 function Stream(opts) {
     EE.call(this, opts);
