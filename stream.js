@@ -79,6 +79,7 @@ export {
     isUint8Array as _isUint8Array,
     PassThrough,
     pipeline,
+    promises,
     Readable,
     Stream,
     Transform,

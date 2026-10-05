@@ -559,5 +559,8 @@ EventEmitter.on = function (emitter, event, options) {
   })();
 };
 
+const on = EventEmitter.on;
+const staticListenerCount = EventEmitter.listenerCount;
+
 export default EventEmitter;
-export { EventEmitter, captureRejectionSymbol };
+export { EventEmitter, captureRejectionSymbol, on, staticListenerCount as listenerCount };

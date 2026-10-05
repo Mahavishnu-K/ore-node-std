@@ -389,9 +389,21 @@ const pathExports = {
   parse,
   sep,
   delimiter,
+  toNamespacedPath,
   posix: null,
   win32: null,
 };
-pathExports.posix = pathExports;
+
+export const posix = pathExports;
+export const win32 = {
+  ...pathExports,
+  sep: '\\',
+  delimiter: ';',
+  posix,
+  win32: null,
+};
+win32.win32 = win32;
+pathExports.posix = posix;
+pathExports.win32 = win32;
 
 export default pathExports;
