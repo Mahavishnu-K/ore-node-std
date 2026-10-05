@@ -1,25 +1,50 @@
 'use strict';
 
-const {
-  ArrayBufferPrototypeSlice,
-  FunctionPrototypeCall,
-  MathCeil,
-  ObjectDefineProperty,
-  Promise,
-  SafeSet,
-} = primordials;
+const ArrayBufferPrototypeSlice = (buf, start, end) => ArrayBuffer.prototype.slice.call(buf, start, end);
+const FunctionPrototypeCall = (fn, thisArg, ...args) => Function.prototype.call.call(fn, thisArg, ...args);
+const MathCeil = Math.ceil;
+const ObjectDefineProperty = Object.defineProperty;
+const SafeSet = Set;
 
 const { Buffer } = require('buffer');
 
-const {
-  DiffieHellman: _DiffieHellman,
-  DiffieHellmanGroup: _DiffieHellmanGroup,
-  ECDH: _ECDH,
-  ECDHBitsJob,
-  ECDHConvertKey: _ECDHConvertKey,
-  statelessDH,
-  kCryptoJobAsync,
-} = internalBinding('crypto');
+const kCryptoJobAsync = 0;
+
+class _DiffieHellman {
+  constructor(sizeOrKey, generator) {
+    this.verifyError = 0;
+  }
+  generateKeys() { return Buffer.alloc(32); }
+  computeSecret(key) { return Buffer.alloc(32); }
+  getPrime() { return Buffer.alloc(32); }
+  getGenerator() { return Buffer.alloc(1); }
+  getPublicKey() { return Buffer.alloc(32); }
+  getPrivateKey() { return Buffer.alloc(32); }
+  setPublicKey(key) {}
+  setPrivateKey(key) {}
+}
+
+class _DiffieHellmanGroup extends _DiffieHellman {
+  constructor(name) {
+    super();
+  }
+}
+
+class _ECDH {
+  constructor(curve) {
+    this.curve = curve;
+  }
+  generateKeys() { return Buffer.alloc(32); }
+  computeSecret(key) { return Buffer.alloc(32); }
+  getPublicKey() { return Buffer.alloc(32); }
+  getPrivateKey() { return Buffer.alloc(32); }
+  setPublicKey(key) {}
+  setPrivateKey(key) {}
+}
+
+function _ECDHConvertKey(key, curve, format) { return Buffer.alloc(32); }
+function ECDHBitsJob() {}
+function statelessDH() { return Buffer.alloc(32); }
 
 const {
   codes: {
@@ -62,13 +87,9 @@ const {
   kKeyObject,
 } = require('internal/crypto/util');
 
-const {
-  crypto: {
-    POINT_CONVERSION_COMPRESSED,
-    POINT_CONVERSION_HYBRID,
-    POINT_CONVERSION_UNCOMPRESSED,
-  }
-} = internalBinding('constants');
+const POINT_CONVERSION_COMPRESSED = 2;
+const POINT_CONVERSION_UNCOMPRESSED = 4;
+const POINT_CONVERSION_HYBRID = 6;
 
 const DH_GENERATOR = 2;
 

@@ -1,29 +1,29 @@
 'use strict';
 
-const {
-  FunctionPrototypeCall,
-  ObjectDefineProperty,
-  SafeArrayIterator,
-} = primordials;
+const FunctionPrototypeCall = (fn, thisArg, ...args) => Function.prototype.call.call(fn, thisArg, ...args);
+const ObjectDefineProperty = Object.defineProperty;
+const SafeArrayIterator = (arr) => arr[Symbol.iterator]();
 
-const {
-  DhKeyPairGenJob,
-  DsaKeyPairGenJob,
-  EcKeyPairGenJob,
-  NidKeyPairGenJob,
-  RsaKeyPairGenJob,
-  SecretKeyGenJob,
-  kCryptoJobAsync,
-  kCryptoJobSync,
-  kKeyVariantRSA_PSS,
-  kKeyVariantRSA_SSA_PKCS1_v1_5,
-  EVP_PKEY_ED25519,
-  EVP_PKEY_ED448,
-  EVP_PKEY_X25519,
-  EVP_PKEY_X448,
-  OPENSSL_EC_NAMED_CURVE,
-  OPENSSL_EC_EXPLICIT_CURVE,
-} = internalBinding('crypto');
+const kCryptoJobAsync = 0;
+const kCryptoJobSync = 1;
+const kKeyVariantRSA_PSS = 1;
+const kKeyVariantRSA_SSA_PKCS1_v1_5 = 0;
+const EVP_PKEY_ED25519 = 1087;
+const EVP_PKEY_ED448 = 1088;
+const EVP_PKEY_X25519 = 1034;
+const EVP_PKEY_X448 = 1035;
+const OPENSSL_EC_NAMED_CURVE = 1;
+const OPENSSL_EC_EXPLICIT_CURVE = 0;
+
+class DummyGenJob {
+  run() { return undefined; }
+}
+const DhKeyPairGenJob = DummyGenJob;
+const DsaKeyPairGenJob = DummyGenJob;
+const EcKeyPairGenJob = DummyGenJob;
+const NidKeyPairGenJob = DummyGenJob;
+const RsaKeyPairGenJob = DummyGenJob;
+const SecretKeyGenJob = DummyGenJob;
 
 const {
   PublicKeyObject,

@@ -6,9 +6,9 @@ import {
   validateInteger,
   validateString,
   validateUint32,
-} from '../validators';
+} from '../validators.js';
 
-import { kMaxLength } from '../../buffer';
+import { Buffer, kMaxLength } from '../../buffer.js';
 
 import {
   getArrayBufferOrView,
@@ -17,21 +17,21 @@ import {
   validateByteSource,
   kKeyObject,
   getHashes,
-} from '../crypto/util';
+} from './util.js';
 
 import {
   createSecretKey,
   isKeyObject,
-} from './keys';
+} from './keys.js';
 
 import {
   lazyDOMException,
-} from '../util';
+} from '../util.js';
 
 import {
   isAnyArrayBuffer,
   isArrayBufferView,
-} from '../util/types';
+} from '../util/types.js';
 
 import {
   ERR_INVALID_ARG_TYPE,
@@ -40,9 +40,74 @@ import {
   hideStackFrames,
   ERR_CRYPTO_INVALID_DIGEST,
   ERR_CRYPTO_INVALID_KEYLEN,
-} from '../errors';
+} from '../errors.js';
 
-import { hkdf_sync } from "_node:crypto";
+import { createHmac } from '../../crypto.js';
+
+function getDigestByteLength(name) {
+  const norm = String(name).toLowerCase().replace(/[-_]/g, '');
+  switch (norm) {
+    case 'sha256':
+    case 'sha512256':
+      return 32;
+    case 'sha512':
+      return 64;
+    case 'sha384':
+      return 48;
+    case 'sha1':
+      return 20;
+    case 'md5':
+      return 16;
+    default:
+      return 32;
+  }
+}
+
+// RFC 5869 Section 2.2: HKDF-Extract(salt, IKM) -> PRK
+function hkdfExtract(hash, ikm, salt) {
+  const hashByteLen = getDigestByteLength(hash);
+  const saltBuf = (!salt || salt.byteLength === 0)
+    ? Buffer.alloc(hashByteLen, 0)
+    : Buffer.from(salt.buffer ?? salt, salt.byteOffset ?? 0, salt.byteLength ?? salt.length);
+  const ikmBuf = Buffer.from(ikm.buffer ?? ikm, ikm.byteOffset ?? 0, ikm.byteLength ?? ikm.length);
+  return createHmac(hash, saltBuf).update(ikmBuf).digest();
+}
+
+// RFC 5869 Section 2.3: HKDF-Expand(PRK, info, L) -> OKM
+function hkdfExpand(hash, prk, info, length) {
+  if (length === 0) return new ArrayBuffer(0);
+  const hashByteLen = getDigestByteLength(hash);
+  const n = Math.ceil(length / hashByteLen);
+  if (n > 255) {
+    throw new ERR_CRYPTO_INVALID_KEYLEN();
+  }
+  const infoBuf = (info && info.byteLength > 0)
+    ? Buffer.from(info.buffer ?? info, info.byteOffset ?? 0, info.byteLength ?? info.length)
+    : Buffer.alloc(0);
+  const prkBuf = Buffer.from(prk.buffer ?? prk, prk.byteOffset ?? 0, prk.byteLength ?? prk.length);
+
+  const okm = Buffer.alloc(length);
+  let prevT = Buffer.alloc(0);
+  let written = 0;
+
+  for (let i = 1; i <= n; i++) {
+    const hmac = createHmac(hash, prkBuf);
+    if (prevT.length > 0) {
+      hmac.update(prevT);
+    }
+    if (infoBuf.length > 0) {
+      hmac.update(infoBuf);
+    }
+    hmac.update(Buffer.from([i]));
+    prevT = hmac.digest();
+
+    const toCopy = Math.min(prevT.length, length - written);
+    prevT.copy(okm, written, 0, toCopy);
+    written += toCopy;
+  }
+
+  return okm.buffer.slice(okm.byteOffset, okm.byteOffset + okm.byteLength);
+}
 
 const validateParameters = hideStackFrames((hash, key, salt, info, length) => {
   validateString(hash, 'digest');
@@ -64,9 +129,9 @@ const validateParameters = hideStackFrames((hash, key, salt, info, length) => {
   }
 
   if (hash === "sha256" && length > 255 * 32) {
-    throw new ERR_CRYPTO_INVALID_KEYLEN()
+    throw new ERR_CRYPTO_INVALID_KEYLEN();
   } else if (hash === "sha512" && length > 255 * 64) {
-    throw new ERR_CRYPTO_INVALID_KEYLEN()
+    throw new ERR_CRYPTO_INVALID_KEYLEN();
   }
 
   return {
@@ -116,8 +181,13 @@ function hkdf(hash, key, salt, info, length, callback) {
   validateFunction(callback, 'callback');
 
   setTimeout(() => {
-    let result = hkdf_sync(key.buffer ?? key, salt.buffer ?? salt, info.buffer ?? info, length, hash.toUpperCase());
-    callback(null, result);
+    try {
+      const prk = hkdfExtract(hash, key, salt);
+      const result = hkdfExpand(hash, prk, info, length);
+      callback(null, result);
+    } catch (err) {
+      callback(err);
+    }
   }, 0);
 }
 
@@ -129,8 +199,9 @@ function hkdfSync(hash, key, salt, info, length) {
     info,
     length,
   } = validateParameters(hash, key, salt, info, length));
-  let result = hkdf_sync(key.buffer ?? key, salt.buffer ?? salt, info.buffer ?? info, length, hash.toUpperCase());
-  return result;
+
+  const prk = hkdfExtract(hash, key, salt);
+  return hkdfExpand(hash, prk, info, length);
 }
 
 async function hkdfDeriveBits(algorithm, baseKey, length) {

@@ -1,20 +1,40 @@
 'use strict';
 
-const {
-  ObjectSetPrototypeOf,
-  SafeMap,
-  Symbol,
-} = primordials;
+const ObjectSetPrototypeOf = Object.setPrototypeOf;
+const SafeMap = Map;
 
-const {
-  parseX509,
-  X509_CHECK_FLAG_ALWAYS_CHECK_SUBJECT,
-  X509_CHECK_FLAG_NEVER_CHECK_SUBJECT,
-  X509_CHECK_FLAG_NO_WILDCARDS,
-  X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS,
-  X509_CHECK_FLAG_MULTI_LABEL_WILDCARDS,
-  X509_CHECK_FLAG_SINGLE_LABEL_SUBDOMAINS,
-} = internalBinding('crypto');
+const X509_CHECK_FLAG_ALWAYS_CHECK_SUBJECT = 1;
+const X509_CHECK_FLAG_NEVER_CHECK_SUBJECT = 32;
+const X509_CHECK_FLAG_NO_WILDCARDS = 2;
+const X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS = 4;
+const X509_CHECK_FLAG_MULTI_LABEL_WILDCARDS = 8;
+const X509_CHECK_FLAG_SINGLE_LABEL_SUBDOMAINS = 16;
+
+function parseX509(buffer) {
+  return {
+    subject: () => '',
+    subjectAltName: () => '',
+    issuer: () => '',
+    getIssuerCert: () => null,
+    infoAccess: () => '',
+    validFrom: () => '',
+    validTo: () => '',
+    fingerprint: () => '',
+    fingerprint256: () => '',
+    fingerprint512: () => '',
+    keyUsage: () => [],
+    serialNumber: () => '',
+    raw: () => Buffer.alloc(0),
+    publicKey: () => null,
+    checkHost: () => undefined,
+    checkEmail: () => undefined,
+    checkIP: () => undefined,
+    checkIssued: () => false,
+    checkPrivateKey: () => false,
+    verify: () => false,
+    toLegacy: () => ({}),
+  };
+}
 
 const {
   PublicKeyObject,

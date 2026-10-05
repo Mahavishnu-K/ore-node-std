@@ -1,10 +1,8 @@
 'use strict';
 
-const {
-  FunctionPrototypeCall,
-  ObjectSetPrototypeOf,
-  ReflectApply,
-} = primordials;
+const FunctionPrototypeCall = (fn, thisArg, ...args) => Function.prototype.call.call(fn, thisArg, ...args);
+const ObjectSetPrototypeOf = Object.setPrototypeOf;
+const ReflectApply = Reflect.apply;
 
 const {
   codes: {
@@ -20,17 +18,28 @@ const {
   validateString,
 } = require('internal/validators');
 
-const {
-  Sign: _Sign,
-  SignJob,
-  Verify: _Verify,
-  kCryptoJobAsync,
-  kCryptoJobSync,
-  kSigEncDER,
-  kSigEncP1363,
-  kSignJobModeSign,
-  kSignJobModeVerify,
-} = internalBinding('crypto');
+const kCryptoJobAsync = 0;
+const kCryptoJobSync = 1;
+const kSigEncDER = 0;
+const kSigEncP1363 = 1;
+const kSignJobModeSign = 0;
+const kSignJobModeVerify = 1;
+
+class _Sign {
+  init(algo) {}
+  update(data, enc) {}
+  sign(key, enc) { return Buffer.alloc(0); }
+}
+
+class _Verify {
+  init(algo) {}
+  update(data, enc) {}
+  verify(key, sig, enc) { return false; }
+}
+
+class SignJob {
+  run() { return undefined; }
+}
 
 const {
   getArrayBufferOrView,

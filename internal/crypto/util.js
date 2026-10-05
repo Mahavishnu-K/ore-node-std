@@ -9,11 +9,11 @@
   secureHeapUsed: _secureHeapUsed,
 } = internalBinding('crypto');*/
 
-import { getOptionValue } from '../options';
+import { getOptionValue } from '../options.js';
 
-import { crypto } from '../../internal_binding/constants';
+import { crypto } from '../../internal_binding/constants.js';
 const { ENGINE_METHOD_ALL } = crypto;
-import normalizeHashName from './hashnames';
+import normalizeHashName from './hashnames.js';
 
 import {
   hideStackFrames,
@@ -21,26 +21,26 @@ import {
   ERR_INVALID_ARG_TYPE,
   ERR_INVALID_ARG_VALUE,
   ERR_OUT_OF_RANGE,
-} from '../errors';
+} from '../errors.js';
 
 import {
   validateArray,
   validateNumber,
   validateString
-} from '../validators';
+} from '../validators.js';
 
-import { Buffer } from 'buffer';
+import { Buffer } from '../../buffer.js';
 
 import {
   cachedResult,
   filterDuplicateStrings,
   lazyDOMException,
-} from '../util';
+} from '../util.js';
 
 import {
   isArrayBufferView,
   isAnyArrayBuffer,
-} from '../util/types';
+} from '../util/types.js';
 
 const kHandle = Symbol('kHandle');
 const kKeyObject = Symbol('kKeyObject');

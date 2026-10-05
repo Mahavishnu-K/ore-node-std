@@ -45,7 +45,7 @@ import {
   validateObject,
   validateOneOf,
   validateString,
-} from '../validators';
+} from '../validators.js';
 
 import {
   ERR_CRYPTO_INCOMPATIBLE_KEY_OPTIONS,
@@ -54,19 +54,19 @@ import {
   ERR_ILLEGAL_CONSTRUCTOR,
   ERR_INVALID_ARG_TYPE,
   ERR_INVALID_ARG_VALUE,
-} from '../errors';
+} from '../errors.js';
 
 import {
   kHandle,
   kKeyObject,
   getArrayBufferOrView,
   bigIntArrayToUnsignedBigInt,
-} from '../crypto/util';
+} from './util.js';
 
 import {
   isAnyArrayBuffer,
   isArrayBufferView,
-} from '../util/types';
+} from '../util/types.js';
 
 /*const {
   JSTransferable,
@@ -79,11 +79,11 @@ const kDeserialize = Symbol('kDeserialize');
 
 import {
   customInspectSymbol as kInspect,
-} from '../util';
+} from '../util.js';
 
-import { inspect } from '../util/inspect';
+import { inspect } from '../util/inspect.js';
 
-import { Buffer } from '../../buffer';
+import { Buffer } from '../../buffer.js';
 
 const kAlgorithm = Symbol('kAlgorithm');
 const kExtractable = Symbol('kExtractable');
