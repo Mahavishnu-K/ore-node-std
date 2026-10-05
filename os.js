@@ -1,7 +1,7 @@
 
 // Node.js 'os' compatibility module for WASI / QuickJS.
 
-import process from 'process';
+import process from './process.js';
 
 export const EOL = '\n';
 export const devNull = '/dev/null';

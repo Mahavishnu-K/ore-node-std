@@ -1,6 +1,6 @@
 // Node.js 'timers' compatibility module for WASI / QuickJS.
 
-import process from 'process';
+import process from './process.js';
 
 var exports$2 = {},
     _dewExec$1 = false;

@@ -1,6 +1,6 @@
 // WHATWG TextEncoder and TextDecoder implementation for QuickJS / WASI.
 
-import { Buffer } from 'buffer';
+import { Buffer } from './buffer.js';
 
 const kEnvs = ['utf-8', 'utf8', 'unicode-1-1-utf-8'];
 

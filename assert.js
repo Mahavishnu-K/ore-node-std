@@ -20,7 +20,7 @@
 
 'use strict';
 
-import { Buffer } from 'buffer';
+import { Buffer } from './buffer.js';
 import {
   ERR_AMBIGUOUS_ARGUMENT,
   ERR_INVALID_ARG_TYPE,
@@ -33,7 +33,7 @@ import {
 const overrideStackTrace = new WeakMap();
 
 import AssertionError from './internal/assert/assertion_error.js';
-import { openSync, closeSync, readSync } from 'fs';
+import { openSync, closeSync, readSync } from './fs.js';
 import { inspect } from './internal/util/inspect.js';
 import { isPromise, isRegExp } from './internal/util/types.js';
 import { EOL } from './internal/constants.js';
@@ -45,7 +45,8 @@ import {
   validateFunction,
 } from './internal/validators.js';
 
-import { isDeepEqual, isDeepStrictEqual } from './internal/util/comparisons.js'
+import { isDeepEqual, isDeepStrictEqual } from './internal/util/comparisons.js';
+import { StringDecoder } from './string_decoder.js';
 
 let parseExpressionAt;
 let findNodeAround;
@@ -298,7 +299,6 @@ function getErrMessage(message, fn) {
 
     if (filename) {
       if (decoder === undefined) {
-        const { StringDecoder } = import('string_decoder');
         decoder = new StringDecoder('utf8');
       }
       fd = openSync(filename, 'r', 0o666);

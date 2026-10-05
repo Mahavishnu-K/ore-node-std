@@ -2,8 +2,8 @@
 // Offloads compute-heavy operations to the host kernel via the .ore_crypto VFS portal.
 
 import * as os from 'os';
-import { Buffer } from 'buffer';
-import fs from 'fs';
+import { Buffer } from './buffer.js';
+import fs from './fs.js';
 
 const REQ_FILE = '/ore_tmp/.ore_crypto/req.bin';
 const RES_FILE = '/ore_tmp/.ore_crypto/res.bin';

@@ -1,6 +1,6 @@
 // Node.js 'process' compatibility module for WASI / QuickJS.
 
-import EventEmitter from 'events';
+import EventEmitter from './events.js';
 
 // Environment and runtime identifiers.
 const title = 'wasmedge_quickjs';

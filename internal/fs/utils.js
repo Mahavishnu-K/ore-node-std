@@ -1,7 +1,7 @@
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 "use strict";
 
-import { Buffer } from "../../buffer";
+import { Buffer } from "../../buffer.js";
 import {
   ERR_FS_EISDIR,
   ERR_FS_INVALID_SYMLINK_TYPE,
@@ -10,16 +10,16 @@ import {
   ERR_OUT_OF_RANGE,
   hideStackFrames,
   uvException,
-} from "../errors";
+} from "../errors.js";
 
 import {
   isArrayBufferView,
   isBigUint64Array,
   isDate,
   isUint8Array,
-} from "../util/types";
-import { deprecate, once } from "../util";
-import { toPathIfFileURL } from "../url";
+} from "../util/types.js";
+import { deprecate, once } from "../util.js";
+import { toPathIfFileURL } from "../url.js";
 import {
   validateAbortSignal,
   validateBoolean,
@@ -28,22 +28,22 @@ import {
   validateInteger,
   validateObject,
   validateUint32,
-} from "../validators";
-import * as pathModule from "../../path";
+} from "../validators.js";
+import * as pathModule from "../../path.js";
 const kType = Symbol("type");
 const kStats = Symbol("stats");
-import { assert } from "../assert";
-import { lstat, lstatSync } from "../fs";
-import { stat, statSync } from "../fs";
+import { assert } from "../assert.js";
+import { lstat, lstatSync } from "../fs.js";
+import { stat, statSync } from "../fs.js";
 const isWindows = false;
-import * as process from "../../process";
+import * as process from "../../process.js";
 
 import {
   fs as fsConstants,
   os as osConstants,
-} from "../../internal_binding/constants";
+} from "../../internal_binding/constants.js";
 
-import * as errors from "../errors"
+import * as errors from "../errors.js";
 
 const {
   F_OK = 0,

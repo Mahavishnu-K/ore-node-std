@@ -3,8 +3,8 @@
 
 import * as std from 'std';
 import * as os from 'os';
-import { Buffer } from 'buffer';
-import { Readable, Writable } from 'stream';
+import { Buffer } from './buffer.js';
+import { Readable, Writable } from './stream.js';
 
 export const STATUS_CODES = {
     200: 'OK', 201: 'Created', 202: 'Accepted', 204: 'No Content',

@@ -16,7 +16,7 @@ import promises from "./stream/promises.js";
 import Readable from "./internal/streams/readable.js";
 import Transform from "./internal/streams/transform.js";
 import Writable from "./internal/streams/writable.js";
-import { Buffer } from "buffer";
+import { Buffer } from "./buffer.js";
 
 const { custom: customPromisify } = promisify;
 

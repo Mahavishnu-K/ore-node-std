@@ -3,8 +3,8 @@
 
 import * as std from 'std';
 import * as os from 'os';
-import { Buffer } from 'buffer';
-import { Readable, Writable } from 'stream';
+import { Buffer } from './buffer.js';
+import { Readable, Writable } from './stream.js';
 
 // File access constants and stats indicators.
 export const F_OK = 0;

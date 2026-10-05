@@ -1,10 +1,10 @@
 // Node.js legacy 'url' compatibility module.
 
-import * as p$1 from 'punycode';
-import * as o$1 from 'querystring';
-import process from 'process';
-import * as exports$1 from 'path';
-import { URL } from 'whatwg_url'
+import * as p$1 from './punycode.js';
+import * as o$1 from './querystring.js';
+import process from './process.js';
+import * as exports$1 from './path.js';
+import { URL } from './whatwg_url.js';
 
 var h = {}
 var e = p$1
