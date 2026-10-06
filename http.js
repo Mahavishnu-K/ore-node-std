@@ -187,9 +187,16 @@ export class ClientRequest extends Writable {
         } else if (url && url.href) {
             this.url = url.href;
         } else {
-            const proto = this.options.protocol || 'http:';
-            const host = this.options.hostname || this.options.host || 'localhost';
-            const port = this.options.port ? `:${this.options.port}` : '';
+            let proto = this.options.protocol || (this.options.port === 443 || this.options.defaultPort === 443 ? 'https:' : 'http:');
+            if (!proto.endsWith(':')) proto += ':';
+            let host = this.options.hostname || this.options.host || 'localhost';
+            let port = '';
+            if (this.options.port && !host.includes(':')) {
+                const p = String(this.options.port);
+                if ((proto === 'http:' && p !== '80') || (proto === 'https:' && p !== '443')) {
+                    port = `:${p}`;
+                }
+            }
             const path = this.options.path || '/';
             this.url = `${proto}//${host}${port}${path}`;
         }

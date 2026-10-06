@@ -1570,9 +1570,17 @@ var urlencoded$1 = urlencoded$2;
 
 var URLSearchParams$1 = /*@__PURE__*/(function () {
   function URLSearchParams(constructorArgs, ref) {
-  var doNotStripQMark = ref.doNotStripQMark; if ( doNotStripQMark === void 0 ) doNotStripQMark = false;
+    var refObj = (typeof ref === "object" && ref !== null) ? ref : {};
+    var doNotStripQMark = refObj.doNotStripQMark || false;
 
-    var init = constructorArgs[0];
+    var init;
+    if (ref !== undefined && Array.isArray(constructorArgs)) {
+      init = constructorArgs[0];
+    } else {
+      init = constructorArgs;
+    }
+    if (init === undefined || init === null) init = "";
+
     this._list = [];
     this._url = null;
 
@@ -1582,19 +1590,24 @@ var URLSearchParams$1 = /*@__PURE__*/(function () {
 
     if (Array.isArray(init)) {
       for (var pair of init) {
-        if (pair.length !== 2) {
-          throw new TypeError("Failed to construct 'URLSearchParams': parameter 1 sequence's element does not " +
-                              "contain exactly two elements.");
+        if (!pair || pair.length < 2) {
+          throw new TypeError("Failed to construct 'URLSearchParams': parameter 1 sequence's element does not contain exactly two elements.");
         }
-        this._list.push([pair[0], pair[1]]);
+        this._list.push([String(pair[0]), String(pair[1])]);
       }
-    } else if (typeof init === "object" && Object.getPrototypeOf(init) === null) {
-      for (var name of Object.keys(init)) {
-        var value = init[name];
-        this._list.push([name, value]);
+    } else if (typeof init === "object" && init !== null) {
+      if (typeof init[Symbol.iterator] === "function") {
+        for (var p of init) {
+          this._list.push([String(p[0]), String(p[1])]);
+        }
+      } else {
+        for (var name of Object.keys(init)) {
+          var value = init[name];
+          this._list.push([String(name), String(value)]);
+        }
       }
     } else {
-      this._list = urlencoded$1.parseUrlencodedString(init);
+      this._list = urlencoded$1.parseUrlencodedString(String(init));
     }
   }
 
@@ -1689,13 +1702,42 @@ var URLSearchParams$1 = /*@__PURE__*/(function () {
     this._updateSteps();
   };
 
-  URLSearchParams.prototype[Symbol.iterator] = function () {
-    return this._list[Symbol.iterator]();
+  URLSearchParams.prototype.keys = function* keys () {
+    for (var i = 0; i < this._list.length; i++) {
+      yield this._list[i][0];
+    }
   };
 
-  URLSearchParams.prototype.entries = function entries () {
-    return this._list[Symbol.iterator]();
+  URLSearchParams.prototype.values = function* values () {
+    for (var i = 0; i < this._list.length; i++) {
+      yield this._list[i][1];
+    }
   };
+
+  URLSearchParams.prototype.entries = function* entries () {
+    for (var i = 0; i < this._list.length; i++) {
+      yield [this._list[i][0], this._list[i][1]];
+    }
+  };
+
+  URLSearchParams.prototype[Symbol.iterator] = URLSearchParams.prototype.entries;
+
+  URLSearchParams.prototype.forEach = function forEach (callback, thisArg) {
+    if (typeof callback !== 'function') {
+      throw new TypeError("Callback must be a function");
+    }
+    for (var i = 0; i < this._list.length; i++) {
+      callback.call(thisArg, this._list[i][1], this._list[i][0], this);
+    }
+  };
+
+  Object.defineProperty(URLSearchParams.prototype, "size", {
+    get: function () {
+      return this._list.length;
+    },
+    enumerable: true,
+    configurable: true
+  });
 
   URLSearchParams.prototype.toString = function toString () {
     return urlencoded$1.serializeUrlencoded(this._list);
@@ -1907,9 +1949,19 @@ var URL = /*@__PURE__*/(function () {
         usm.basicURLParse(input, { url: this._url, stateOverride: "fragment" });
     };
 
+    URL.prototype.toString = function toString () {
+        return this.href;
+    };
+
     URL.prototype.toJSON = function toJSON () {
         return this.href;
     };
+
+    if (typeof Symbol !== "undefined" && Symbol.toPrimitive) {
+        URL.prototype[Symbol.toPrimitive] = function () {
+            return this.href;
+        };
+    }
 
     Object.defineProperties( URL.prototype, prototypeAccessors );
 

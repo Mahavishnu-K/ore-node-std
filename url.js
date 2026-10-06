@@ -4,7 +4,7 @@ import * as p$1 from './punycode.js';
 import * as o$1 from './querystring.js';
 import process from './process.js';
 import * as exports$1 from './path.js';
-import { URL } from './whatwg_url.js';
+import { URL, URLSearchParams } from './whatwg_url.js';
 
 var h = {}
 var e = p$1
@@ -104,7 +104,7 @@ r.prototype.parse = function (t, s, h) {
     this.hostname.length > 255 ? this.hostname = "" : this.hostname = this.hostname.toLowerCase()
     U || (this.hostname = e.toASCII(this.hostname));
     var E = this.port ? ":" + this.port : ""
-    P = this.hostname || "";
+    var P = this.hostname || "";
     this.host = P + E, this.href += this.host
     U && (this.hostname = this.hostname.substr(1, this.hostname.length - 2), "/" !== O[0] && (O = "/" + O));
   }
@@ -878,6 +878,7 @@ function pathToFileURL$1(filepath) {
 var processPlatform = "wasi";
 
 h.URL = typeof URL !== 'undefined' ? URL : null;
+h.URLSearchParams = typeof URLSearchParams !== 'undefined' ? URLSearchParams : null;
 h.pathToFileURL = pathToFileURL;
 h.fileURLToPath = fileURLToPath;
 
@@ -888,6 +889,7 @@ var resolveObject = h.resolveObject;
 var parse = h.parse;
 
 var _URL = h.URL;
+var _URLSearchParams = h.URLSearchParams;
 var CHAR_FORWARD_SLASH = 47;
 var CHAR_LOWERCASE_A = 97;
 var CHAR_LOWERCASE_Z = 122;
@@ -1000,4 +1002,4 @@ function pathToFileURL(filepath) {
   return outURL;
 }
 
-export { _URL as URL, Url, h as default, fileURLToPath, format, parse, pathToFileURL, resolve, resolveObject };
+export { _URL as URL, _URLSearchParams as URLSearchParams, Url, h as default, fileURLToPath, format, parse, pathToFileURL, resolve, resolveObject };
