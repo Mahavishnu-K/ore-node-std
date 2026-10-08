@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const bundlePath = path.join(__dirname, 'final_bundle_4b63aeb3-6d86-4ac2-a1ba-781fa44bcc8a.js');
+const bundlePath = path.join(__dirname, 'final_bundle_55b13844-a4b9-4f51-9c99-a043e9b982f3.js');
 let bundleCode = fs.readFileSync(bundlePath, 'utf8');
 
 // Replace static ESM 'from /modules/' with relative paths to '../'

@@ -1,27 +1,27 @@
 
-import * as _ore_constants from '../constants.js';
-import * as _ore_http from '../http.js';
-import * as _ore_fs from '../fs.js';
-import * as _ore_fs_promises from '../fs/promises.js';
-import * as _ore_path from '../path.js';
-import * as _ore_crypto from '../crypto.js';
-import * as _ore_buffer from '../buffer.js';
-import * as _ore_events from '../events.js';
-import * as _ore_util from '../util.js';
-import * as _ore_util_types from '../util/types.js';
-import * as _ore_os from '../os.js';
-import * as _ore_url from '../url.js';
-import * as _ore_stream from '../stream.js';
-import * as _ore_stream_promises from '../stream/promises.js';
-import * as _ore_stream_consumers from '../stream/consumers.js';
-import * as _ore_assert from '../assert.js';
-import * as _ore_qs from '../querystring.js';
-import * as _ore_process from '../process.js';
-import * as _ore_string_decoder from '../string_decoder.js';
-import * as _ore_timers from '../timers.js';
-import * as _ore_timers_promises from '../timers/promises.js';
-import * as _ore_punycode from '../punycode.js';
-import * as _ore_encoding from '../encoding.js';
+import * as _ore_constants from '/modules/constants.js';
+import * as _ore_http from '/modules/http.js';
+import * as _ore_fs from '/modules/fs.js';
+import * as _ore_fs_promises from '/modules/fs/promises.js';
+import * as _ore_path from '/modules/path.js';
+import * as _ore_crypto from '/modules/crypto.js';
+import * as _ore_buffer from '/modules/buffer.js';
+import * as _ore_events from '/modules/events.js';
+import * as _ore_util from '/modules/util.js';
+import * as _ore_util_types from '/modules/util/types.js';
+import * as _ore_os from '/modules/os.js';
+import * as _ore_url from '/modules/url.js';
+import * as _ore_stream from '/modules/stream.js';
+import * as _ore_stream_promises from '/modules/stream/promises.js';
+import * as _ore_stream_consumers from '/modules/stream/consumers.js';
+import * as _ore_assert from '/modules/assert.js';
+import * as _ore_qs from '/modules/querystring.js';
+import * as _ore_process from '/modules/process.js';
+import * as _ore_string_decoder from '/modules/string_decoder.js';
+import * as _ore_timers from '/modules/timers.js';
+import * as _ore_timers_promises from '/modules/timers/promises.js';
+import * as _ore_punycode from '/modules/punycode.js';
+import * as _ore_encoding from '/modules/encoding.js';
 
 // Establish Node.js Core Globals
 globalThis.nextTick = (fn, ...args) => {
@@ -16740,8 +16740,8 @@ var require_node_domexception = __commonJS({
 });
 
 // node_modules/fetch-blob/from.js
-import { statSync, createReadStream, promises as fs } from "../fs.js";
-import { basename } from "../path.js";
+import { statSync, createReadStream, promises as fs } from "/modules/fs.js";
+import { basename } from "/modules/path.js";
 var import_node_domexception, stat;
 var init_from = __esm({
   "node_modules/fetch-blob/from.js"() {
@@ -18618,10 +18618,10 @@ var transitional_default = {
 };
 
 // node_modules/axios/lib/platform/node/index.js
-import crypto from "../crypto.js";
+import crypto from "/modules/crypto.js";
 
 // node_modules/axios/lib/platform/node/classes/URLSearchParams.js
-import url from "../url.js";
+import url from "/modules/url.js";
 var URLSearchParams_default = url.URLSearchParams;
 
 // node_modules/axios/lib/platform/node/index.js
@@ -19094,12 +19094,12 @@ function getEnv(key) {
 // node_modules/axios/lib/adapters/http.js
 var import_https_proxy_agent = __toESM(require_dist(), 1);
 var import_follow_redirects = __toESM(require_follow_redirects(), 1);
-import http from "../http.js";
-import https from "../http.js";
-import http22 from "../_empty.js";
-import util3 from "../util.js";
-import { resolve as resolvePath } from "../path.js";
-import zlib from "../_empty.js";
+import http from "/modules/http.js";
+import https from "/modules/http.js";
+import http22 from "/modules/_empty.js";
+import util3 from "/modules/util.js";
+import { resolve as resolvePath } from "/modules/path.js";
+import zlib from "/modules/_empty.js";
 
 // node_modules/axios/lib/env/data.js
 var VERSION = "1.20.0";
@@ -19147,7 +19147,7 @@ function fromDataURI(uri, asBlob, options) {
 }
 
 // node_modules/axios/lib/adapters/http.js
-import stream3 from "../stream.js";
+import stream3 from "/modules/stream.js";
 
 // node_modules/axios/lib/core/setFormDataHeaders.js
 var FORM_DATA_CONTENT_HEADERS = ["content-type", "content-length"];
@@ -19164,7 +19164,7 @@ function setFormDataHeaders(headers, formHeaders, policy) {
 }
 
 // node_modules/axios/lib/helpers/AxiosTransformStream.js
-import stream from "../stream.js";
+import stream from "/modules/stream.js";
 var kInternals = /* @__PURE__ */ Symbol("internals");
 var AxiosTransformStream = class extends stream.Transform {
   constructor(options) {
@@ -19287,11 +19287,11 @@ var AxiosTransformStream = class extends stream.Transform {
 var AxiosTransformStream_default = AxiosTransformStream;
 
 // node_modules/axios/lib/adapters/http.js
-import { EventEmitter } from "../events.js";
+import { EventEmitter } from "/modules/events.js";
 
 // node_modules/axios/lib/helpers/formDataToStream.js
-import util from "../util.js";
-import { Readable } from "../stream.js";
+import util from "/modules/util.js";
+import { Readable } from "/modules/stream.js";
 
 // node_modules/axios/lib/helpers/readBlob.js
 var { asyncIterator } = Symbol;
@@ -19394,7 +19394,7 @@ var formDataToStream = (form, headersHandler, options) => {
 var formDataToStream_default = formDataToStream;
 
 // node_modules/axios/lib/helpers/ZlibHeaderTransformStream.js
-import stream2 from "../stream.js";
+import stream2 from "/modules/stream.js";
 var ZlibHeaderTransformStream = class extends stream2.Transform {
   __transform(chunk, encoding, callback) {
     this.push(chunk);
@@ -19416,8 +19416,8 @@ var ZlibHeaderTransformStream = class extends stream2.Transform {
 var ZlibHeaderTransformStream_default = ZlibHeaderTransformStream;
 
 // node_modules/axios/lib/helpers/Http2Sessions.js
-import http2 from "../_empty.js";
-import util2 from "../util.js";
+import http2 from "/modules/_empty.js";
+import util2 from "/modules/util.js";
 var Http2Sessions = class {
   constructor() {
     this.sessions = /* @__PURE__ */ Object.create(null);
@@ -22737,11 +22737,11 @@ var {
 } = axios_default;
 
 // node_modules/node-fetch/src/index.js
-import http4 from "../http.js";
-import https2 from "../http.js";
-import zlib2 from "../_empty.js";
-import Stream2, { PassThrough as PassThrough2, pipeline as pump } from "../stream.js";
-import { Buffer as Buffer3 } from "../buffer.js";
+import http4 from "/modules/http.js";
+import https2 from "/modules/http.js";
+import zlib2 from "/modules/_empty.js";
+import Stream2, { PassThrough as PassThrough2, pipeline as pump } from "/modules/stream.js";
+import { Buffer as Buffer3 } from "/modules/buffer.js";
 
 // node_modules/data-uri-to-buffer/dist/index.js
 function dataUriToBuffer(uri) {
@@ -22785,9 +22785,9 @@ var dist_default = dataUriToBuffer;
 // node_modules/node-fetch/src/body.js
 init_fetch_blob();
 init_esm_min();
-import Stream, { PassThrough } from "../stream.js";
-import { types, deprecate, promisify } from "../util.js";
-import { Buffer as Buffer2 } from "../buffer.js";
+import Stream, { PassThrough } from "/modules/stream.js";
+import { types, deprecate, promisify } from "/modules/util.js";
+import { Buffer as Buffer2 } from "/modules/buffer.js";
 
 // node_modules/node-fetch/src/errors/base.js
 var FetchBaseError = class extends Error {
@@ -23088,8 +23088,8 @@ var writeToStream = async (dest, { body }) => {
 };
 
 // node_modules/node-fetch/src/headers.js
-import { types as types2 } from "../util.js";
-import http3 from "../http.js";
+import { types as types2 } from "/modules/util.js";
+import http3 from "/modules/http.js";
 var validateHeaderName = typeof http3.validateHeaderName === "function" ? http3.validateHeaderName : (name) => {
   if (!/^[\^`\-\w!#$%&'*+.|~]+$/.test(name)) {
     const error = new TypeError(`Header name must be a valid HTTP token [${name}]`);
@@ -23398,8 +23398,8 @@ Object.defineProperties(Response.prototype, {
 });
 
 // node_modules/node-fetch/src/request.js
-import { format as formatUrl } from "../url.js";
-import { deprecate as deprecate2 } from "../util.js";
+import { format as formatUrl } from "/modules/url.js";
+import { deprecate as deprecate2 } from "/modules/util.js";
 
 // node_modules/node-fetch/src/utils/get-search.js
 var getSearch = (parsedURL) => {
@@ -23412,7 +23412,7 @@ var getSearch = (parsedURL) => {
 };
 
 // node_modules/node-fetch/src/utils/referrer.js
-import { isIP } from "../_empty.js";
+import { isIP } from "/modules/_empty.js";
 function stripURLForUseAsAReferrer(url2, originOnly = false) {
   if (url2 == null) {
     return "no-referrer";
@@ -24018,10 +24018,10 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 }
 
 // index_55b13844-a4b9-4f51-9c99-a043e9b982f3.js
-import http5 from "../http.js";
-import https3 from "../http.js";
-import fs2 from "../fs.js";
-import path from "../path.js";
+import http5 from "/modules/http.js";
+import https3 from "/modules/http.js";
+import fs2 from "/modules/fs.js";
+import path from "/modules/path.js";
 (async () => {
   console.log("--- JAVASCRIPT NETWORK DIAGNOSTICS ---\n");
   try {

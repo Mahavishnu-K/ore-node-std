@@ -1123,21 +1123,25 @@ async function* createAsyncIterator(stream, options) {
     let endEmitted = state.endEmitted;
     let closeEmitted = state.closeEmitted;
 
+    function onError(err) {
+        error = err;
+        errorEmitted = true;
+        next.call(this);
+    }
+    function onEnd() {
+        endEmitted = true;
+        next.call(this);
+    }
+    function onClose() {
+        closeEmitted = true;
+        next.call(this);
+    }
+
     stream
         .on("readable", next)
-        .on("error", function (err) {
-            error = err;
-            errorEmitted = true;
-            next.call(this);
-        })
-        .on("end", function () {
-            endEmitted = true;
-            next.call(this);
-        })
-        .on("close", function () {
-            closeEmitted = true;
-            next.call(this);
-        });
+        .on("error", onError)
+        .on("end", onEnd)
+        .on("close", onClose);
 
     let errorThrown = false;
     try {
@@ -1145,11 +1149,9 @@ async function* createAsyncIterator(stream, options) {
             const chunk = stream.destroyed ? null : stream.read();
             if (chunk !== null) {
                 yield chunk;
-            } else if (errorEmitted) {
-                throw error;
-            } else if (endEmitted) {
-                break;
-            } else if (closeEmitted) {
+            } else if (errorEmitted || state.errored) {
+                throw (error || state.errored);
+            } else if (endEmitted || state.endEmitted || state.ended || stream.readableEnded || stream.destroyed || state.closed) {
                 break;
             } else {
                 await new Promise(next);
@@ -1168,6 +1170,11 @@ async function* createAsyncIterator(stream, options) {
                 destroyImpl.destroyer(stream, null);
             }
         }
+        stream
+            .removeListener("readable", next)
+            .removeListener("error", onError)
+            .removeListener("end", onEnd)
+            .removeListener("close", onClose);
     }
 }
 

@@ -83,10 +83,17 @@ export async function fetch(url, options = {}) {
     const reqFilePath = `/ore_tmp/.ore_network/req_${reqId}.json`;
     const resFilePath = `/ore_tmp/.ore_network/res_${reqId}.bin`;
 
+    const sanitizedHeaders = Object.assign({}, options.headers || {});
+    for (const k of Object.keys(sanitizedHeaders)) {
+        if (k.toLowerCase() === 'accept-encoding') {
+            delete sanitizedHeaders[k];
+        }
+    }
+
     const reqPayload = JSON.stringify({
         method: method,
         url: url.toString(),
-        headers: options.headers || {},
+        headers: sanitizedHeaders,
         body: options.body ? options.body.toString() : "",
         filename: targetFilename
     });
@@ -157,15 +164,14 @@ export class IncomingMessage extends Readable {
                 f.read(buf, 0, len);
                 f.close();
                 
-                this.push(Buffer.from(buf));
-            } else {
-                this.push(null);
+                if (len > 0) {
+                    this.push(Buffer.from(buf));
+                }
             }
+            this.push(null);
         } catch (e) {
             this.destroy(e);
-            return;
         }
-        this.push(null);
     }
 }
 
@@ -181,6 +187,11 @@ export class ClientRequest extends Writable {
         this.cb = cb;
         this.bodyChunks = [];
         this.headers = Object.assign({}, this.options.headers || {});
+        for (const k of Object.keys(this.headers)) {
+            if (k.toLowerCase() === 'accept-encoding') {
+                delete this.headers[k];
+            }
+        }
 
         if (typeof url === 'string') {
             this.url = url;
