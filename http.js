@@ -36,8 +36,23 @@ function generateRequestId() {
     return `${Date.now()}_${Math.floor(Math.random() * 1000000)}`;
 }
 
+async function waitDone(doneFilePath) {
+    let attempts = 0;
+    while (attempts < 3000) {
+        try {
+            let df = std.open(doneFilePath, "r");
+            if (df) {
+                df.close();
+                return;
+            }
+        } catch (_) {}
+        await sleep(10);
+        attempts++;
+    }
+}
+
 // Polls target response file until completion or timeout.
-async function waitForResponse(resFilePath) {
+async function waitForResponse(resFilePath, metaFilePath) {
     let attempts = 0;
     while (attempts < 3000) { // 30-second timeout
         try {
@@ -61,8 +76,33 @@ async function waitForResponse(resFilePath) {
                             if (clear) clear.close();
                         }
                     } catch (_) {}
+
+                    // Read metadata if available
+                    let meta = {};
+                    if (metaFilePath) {
+                        try {
+                            let mf = std.open(metaFilePath, "r");
+                            if (mf) {
+                                mf.seek(0, std.SEEK_END);
+                                let msize = mf.tell();
+                                mf.seek(0, std.SEEK_SET);
+                                if (msize > 0) {
+                                    let mbuf = new ArrayBuffer(msize);
+                                    mf.read(mbuf, 0, msize);
+                                    let mstr = Buffer.from(mbuf).toString('utf8');
+                                    meta = JSON.parse(mstr);
+                                }
+                                mf.close();
+                                try {
+                                    if (os && (os.remove || os.unlink)) {
+                                        (os.remove || os.unlink)(metaFilePath);
+                                    }
+                                } catch (_) {}
+                            }
+                        } catch (_) {}
+                    }
                     
-                    return Buffer.from(buffer);
+                    return { buffer: Buffer.from(buffer), meta };
                 }
                 f.close();
             }
@@ -82,6 +122,8 @@ export async function fetch(url, options = {}) {
     const targetFilename = `.ore_network/dl_${reqId}.bin`;
     const reqFilePath = `/ore_tmp/.ore_network/req_${reqId}.json`;
     const resFilePath = `/ore_tmp/.ore_network/res_${reqId}.bin`;
+    const metaFilePath = `/ore_tmp/.ore_network/res_${reqId}.meta`;
+    const doneFilePath = `/ore_tmp/${targetFilename}.done`;
 
     const sanitizedHeaders = Object.assign({}, options.headers || {});
     for (const k of Object.keys(sanitizedHeaders)) {
@@ -103,7 +145,7 @@ export async function fetch(url, options = {}) {
     reqFile.puts(reqPayload);
     reqFile.close();
 
-    const rawBuffer = await waitForResponse(resFilePath);
+    const { buffer: rawBuffer, meta } = await waitForResponse(resFilePath, metaFilePath);
     const statusChar = rawBuffer.slice(0, 1).toString('utf8');
     const payload = rawBuffer.slice(1);
 
@@ -112,15 +154,36 @@ export async function fetch(url, options = {}) {
     }
 
     const bodyPath = `/ore_tmp/${targetFilename}`;
+    const statusCode = (meta && meta.status) ? meta.status : 200;
+    const statusText = (meta && meta.status_text) ? meta.status_text : (STATUS_CODES[statusCode] || 'OK');
+
+    const headersMap = new Map();
+    if (meta && meta.headers && typeof meta.headers === 'object') {
+        for (const [k, v] of Object.entries(meta.headers)) {
+            headersMap.set(k.toLowerCase(), v);
+        }
+    } else {
+        headersMap.set('content-type', 'application/json');
+    }
 
     return {
-        ok: true,
-        status: 200,
-        headers: new Map([['content-type', 'application/json']]),
+        ok: statusCode >= 200 && statusCode < 300,
+        status: statusCode,
+        statusText: statusText,
+        headers: headersMap,
+        cookies: (meta && meta.cookies) ? meta.cookies : {},
         _bodyPath: bodyPath,
-        text: async () => std.loadFile(bodyPath),
-        json: async () => JSON.parse(std.loadFile(bodyPath)),
+        _donePath: doneFilePath,
+        text: async () => {
+            await waitDone(doneFilePath);
+            return std.loadFile(bodyPath);
+        },
+        json: async () => {
+            await waitDone(doneFilePath);
+            return JSON.parse(std.loadFile(bodyPath));
+        },
         arrayBuffer: async () => {
+            await waitDone(doneFilePath);
             let f = std.open(bodyPath, "rb");
             if (!f) return new ArrayBuffer(0);
             f.seek(0, std.SEEK_END);
@@ -135,43 +198,97 @@ export async function fetch(url, options = {}) {
 }
 globalThis.fetch = fetch;
 
-// IncomingMessage: Readable stream implementation for response payloads.
+// IncomingMessage: Readable stream implementation for response payloads with real status & streaming chunks.
 export class IncomingMessage extends Readable {
-    constructor(bodyPath) {
+    constructor(bodyPath, statusCode = 200, statusMessage = 'OK', headers = {}) {
         super();
-        this.statusCode = 200;
-        this.statusMessage = 'OK';
-        this.headers = {
-            'content-type': 'application/json'
-        };
-        this.rawHeaders = ['Content-Type', 'application/json'];
+        this.statusCode = statusCode;
+        this.statusMessage = statusMessage;
+        
+        const normHeaders = {};
+        const rawHeaders = [];
+        if (headers instanceof Map) {
+            for (const [k, v] of headers.entries()) {
+                normHeaders[k.toLowerCase()] = v;
+                rawHeaders.push(k, v);
+            }
+        } else if (headers && typeof headers === 'object') {
+            for (const [k, v] of Object.entries(headers)) {
+                normHeaders[k.toLowerCase()] = v;
+                rawHeaders.push(k, v);
+            }
+        } else {
+            normHeaders['content-type'] = 'application/json';
+            rawHeaders.push('Content-Type', 'application/json');
+        }
+
+        this.headers = normHeaders;
+        this.rawHeaders = rawHeaders;
         this.bodyPath = bodyPath;
-        this._sent = false;
+        this.donePath = `${bodyPath}.done`;
+        this._reading = false;
+        this._offset = 0;
     }
 
     _read() {
-        if (this._sent) return;
-        this._sent = true;
+        if (this._reading) return;
+        this._reading = true;
 
-        try {
-            let f = std.open(this.bodyPath, "rb");
-            if (f) {
-                f.seek(0, std.SEEK_END);
-                let len = f.tell();
-                f.seek(0, std.SEEK_SET);
-                
-                let buf = new ArrayBuffer(len);
-                f.read(buf, 0, len);
-                f.close();
-                
-                if (len > 0) {
-                    this.push(Buffer.from(buf));
+        const pump = () => {
+            try {
+                let f = std.open(this.bodyPath, "rb");
+                if (f) {
+                    f.seek(0, std.SEEK_END);
+                    let total = f.tell();
+                    if (total > this._offset) {
+                        f.seek(this._offset, std.SEEK_SET);
+                        let toRead = total - this._offset;
+                        let buf = new ArrayBuffer(toRead);
+                        f.read(buf, 0, toRead);
+                        f.close();
+                        this._offset = total;
+                        this.push(Buffer.from(buf));
+                    } else {
+                        f.close();
+                    }
                 }
+            } catch (_) {}
+
+            let isDone = false;
+            try {
+                let df = std.open(this.donePath, "r");
+                if (df) {
+                    isDone = true;
+                    df.close();
+                }
+            } catch (_) {}
+
+            if (isDone) {
+                try {
+                    let f = std.open(this.bodyPath, "rb");
+                    if (f) {
+                        f.seek(0, std.SEEK_END);
+                        let total = f.tell();
+                        if (total > this._offset) {
+                            f.seek(this._offset, std.SEEK_SET);
+                            let toRead = total - this._offset;
+                            let buf = new ArrayBuffer(toRead);
+                            f.read(buf, 0, toRead);
+                            f.close();
+                            this._offset = total;
+                            this.push(Buffer.from(buf));
+                        } else {
+                            f.close();
+                        }
+                    }
+                } catch (_) {}
+                this.push(null);
+            } else {
+                setTimeout(pump, 10);
             }
-            this.push(null);
-        } catch (e) {
-            this.destroy(e);
-        }
+        };
+
+        pump();
     }
 }
 
@@ -260,7 +377,12 @@ export class ClientRequest extends Writable {
             headers: this.headers,
             body: bodyData
         }).then(res => {
-            const responseStream = new IncomingMessage(res._bodyPath);
+            const responseStream = new IncomingMessage(
+                res._bodyPath,
+                res.status,
+                res.statusText,
+                res.headers
+            );
             if (this.cb) this.cb(responseStream);
             this.emit('response', responseStream);
             callback();

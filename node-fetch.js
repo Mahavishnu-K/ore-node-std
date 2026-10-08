@@ -11,6 +11,8 @@ export class Headers {
         if (init) {
             if (init instanceof Headers) {
                 init.forEach((val, key) => this.set(key, val));
+            } else if (init instanceof Map) {
+                for (const [k, v] of init.entries()) this.set(k, v);
             } else if (Array.isArray(init)) {
                 for (const [k, v] of init) this.append(k, v);
             } else if (typeof init === 'object') {
@@ -170,8 +172,8 @@ export async function fetch(url, options = {}) {
     const bodyText = typeof rawRes.text === 'function' ? await rawRes.text() : String(rawRes);
 
     return new Response(bodyText, {
-        status: rawRes.status || 200,
-        statusText: rawRes.statusText || 'OK',
+        status: rawRes.status ?? 200,
+        statusText: rawRes.statusText ?? 'OK',
         headers: rawRes.headers
     });
 }
