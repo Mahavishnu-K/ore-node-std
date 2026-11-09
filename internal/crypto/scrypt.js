@@ -1,5 +1,6 @@
 // Copyright Joyent and Node contributors. All rights reserved. MIT license.
 'use strict';
+import '../../_host_timers.js';
 
 import { Buffer } from '../../buffer.js';
 

@@ -2,7 +2,7 @@
 
 'use strict';
 
-import process from "process";
+import process from "../../process.js";
 
 let blue = '';
 let green = '';

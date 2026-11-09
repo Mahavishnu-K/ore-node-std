@@ -1,5 +1,6 @@
 // Node.js 'timers' compatibility module for WASI / QuickJS.
 
+import './_host_timers.js';
 import process from './process.js';
 
 var exports$2 = {},

@@ -1,7 +1,7 @@
 // Node.js 'crypto' compatibility module for WASI / QuickJS.
 // Offloads compute-heavy operations to the host kernel via the .ore_crypto VFS portal.
 
-import * as os from 'os';
+import * as os from 'qjs:os';
 import { Buffer } from './buffer.js';
 import fs from './fs.js';
 

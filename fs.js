@@ -1,8 +1,9 @@
 // Node.js 'fs' compatibility module for WASI / QuickJS.
-// Uses synchronous QuickJS C primitives ('std' and 'os') for POSIX file operations.
+// Uses synchronous QuickJS C primitives ('qjs:std' and 'qjs:os') for POSIX file operations.
 
-import * as std from 'std';
-import * as os from 'os';
+import * as std from 'qjs:std';
+import * as os from 'qjs:os';
+import './_host_timers.js';
 import { Buffer } from './buffer.js';
 import { Readable, Writable } from './stream.js';
 
